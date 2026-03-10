@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Dashboard from './components/Dashboard';
 import Questions from './components/Questions';
@@ -10,32 +10,37 @@ import Home from './components/Home';
 import Profile from './components/Profile';
 
 function App() {
+  const navigate = useNavigate();
+
   const [user, setUser] = useState(() => {
-    const savedUser = sessionStorage.getItem('user');
+    const savedUser = localStorage.getItem('user');
     return savedUser ? JSON.parse(savedUser) : null;
   });
 
   const [isGuest, setIsGuest] = useState(() => {
-    return sessionStorage.getItem('guest') === 'true';
+    return localStorage.getItem('guest') === 'true';
   });
 
   const handleLogin = (userData) => {
-    sessionStorage.setItem('user', JSON.stringify(userData));
-    sessionStorage.removeItem('guest');
+    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.removeItem('guest');
     setUser(userData);
     setIsGuest(false);
+    navigate('/home');
   };
 
   const handleGuestLogin = () => {
-    sessionStorage.setItem('guest', 'true');
+    localStorage.setItem('guest', 'true');
     setIsGuest(true);
+    navigate('/home');
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem('user');
-    sessionStorage.removeItem('guest');
+    localStorage.removeItem('user');
+    localStorage.removeItem('guest');
     setUser(null);
     setIsGuest(false);
+    navigate('/login');
   };
 
   const hasAccess = user || isGuest;
@@ -47,7 +52,7 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={!hasAccess ? <Navigate to="/login" /> : <Navigate to="/home" />}
+            element={<Navigate to="/login" />}
           />
 
           <Route
