@@ -11,29 +11,29 @@ import Profile from './components/Profile';
 
 function App() {
   const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem('user');
+    const savedUser = sessionStorage.getItem('user');
     return savedUser ? JSON.parse(savedUser) : null;
   });
 
   const [isGuest, setIsGuest] = useState(() => {
-    return localStorage.getItem('guest') === 'true';
+    return sessionStorage.getItem('guest') === 'true';
   });
 
   const handleLogin = (userData) => {
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.removeItem('guest');
+    sessionStorage.setItem('user', JSON.stringify(userData));
+    sessionStorage.removeItem('guest');
     setUser(userData);
     setIsGuest(false);
   };
 
   const handleGuestLogin = () => {
-    localStorage.setItem('guest', 'true');
+    sessionStorage.setItem('guest', 'true');
     setIsGuest(true);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('guest');
+    sessionStorage.removeItem('user');
+    sessionStorage.removeItem('guest');
     setUser(null);
     setIsGuest(false);
   };
