@@ -2,18 +2,31 @@ import { useState, useEffect } from 'react';
 
 function Tips() {
     const [tips, setTips] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         fetch('http://localhost:5000/api/tips')
             .then((res) => res.json())
-            .then((data) => setTips(data))
-            .catch((err) => console.error(err));
+            .then((data) => {
+                setTips(Array.isArray(data) ? data : []);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error(err);
+                setError('Unable to load interview tips right now.');
+                setLoading(false);
+            });
     }, []);
 
     return (
-        <div className="container">
+        <div>
             <h2>Interview Tips</h2>
             <p>Keep these in mind before your big day.</p>
+
+            {loading && <div className="card">Loading tips...</div>}
+            {error && <div className="card" style={{ color: 'var(--danger)' }}>{error}</div>}
+            {!loading && !error && tips.length === 0 && <div className="card">No tips available yet.</div>}
 
             <div className="row">
                 {tips.map((tip) => (

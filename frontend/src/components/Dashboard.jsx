@@ -1,26 +1,45 @@
 import { useState, useEffect } from 'react';
+import { testsData } from '../data/questionBank';
 
-function Dashboard() {
+function Dashboard({ isGuest }) {
     const [progress, setProgress] = useState(null);
+    const [error, setError] = useState('');
 
     useEffect(() => {
-        fetch('http://localhost:5000/api/progress')
+        const token = localStorage.getItem('token');
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+        fetch('http://localhost:5000/api/progress', { headers })
             .then((res) => res.json())
-            .then((data) => setProgress(data))
-            .catch((err) => console.error(err));
-    }, []);
+            .then((data) => {
+                setProgress({
+                    totalSolved: data.totalSolved || 0,
+                    easySolved: data.easySolved || 0,
+                    mediumSolved: data.mediumSolved || 0,
+                    hardSolved: data.hardSolved || 0,
+                });
+            })
+            .catch((err) => {
+                console.error(err);
+                setError('Could not load progress right now.');
+                setProgress({ totalSolved: 0, easySolved: 0, mediumSolved: 0, hardSolved: 0 });
+            });
+    }, [isGuest]);
 
     if (!progress) {
         return <div className="card">Loading your progress...</div>;
     }
 
-    const totalQuestions = 18;
+    const totalQuestions = Object.values(testsData)
+        .flat()
+        .reduce((count, test) => count + test.questions.length, 0);
     const percentage = Math.round((progress.totalSolved / totalQuestions) * 100) || 0;
 
     return (
         <div>
             <h2>Home</h2>
             <p>Track your interview preparation journey here.</p>
+            {error && <p style={{ color: 'var(--danger)', marginBottom: '12px' }}>{error}</p>}
 
             <div className="card">
                 <h3>Overall Completion</h3>

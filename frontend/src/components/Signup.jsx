@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-function Signup({ onLogin, onGuest }) {
+function Signup({ onSignupSuccess, onGuest }) {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -23,7 +23,8 @@ function Signup({ onLogin, onGuest }) {
             const data = await res.json();
 
             if (res.ok) {
-                onLogin(data.user);
+                // If the user signed up successfully, navigate to login
+                onSignupSuccess();
             } else {
                 setError(data.error || 'Failed to sign up');
             }

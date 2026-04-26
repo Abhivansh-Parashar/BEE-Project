@@ -22,7 +22,7 @@ function Login({ onLogin, onGuest }) {
             const data = await res.json();
 
             if (res.ok) {
-                onLogin(data.user);
+                onLogin(data.user, data.token);
             } else {
                 setError(data.error || 'Invalid credentials');
             }
@@ -31,6 +31,10 @@ function Login({ onLogin, onGuest }) {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleGoogleAuth = () => {
+        window.location.href = "http://localhost:5000/api/auth/google";
     };
 
     return (
@@ -75,6 +79,11 @@ function Login({ onLogin, onGuest }) {
 
                     <button type="submit" className="btn btn-primary" style={{ width: '100%', marginBottom: '15px' }} disabled={loading}>
                         {loading ? 'Signing In...' : 'Sign In'}
+                    </button>
+                    
+                    <button type="button" onClick={handleGoogleAuth} className="btn" style={{ width: '100%', marginBottom: '15px', backgroundColor: '#fff', color: '#333', border: '1px solid #ccc', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style={{width: '18px', height: '18px'}} />
+                        Sign in with Google
                     </button>
                 </form>
 

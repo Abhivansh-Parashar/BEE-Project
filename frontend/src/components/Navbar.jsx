@@ -15,41 +15,36 @@ function Navbar({ user, isGuest, onLogout }) {
     return (
         <div className="navbar">
             <div className="nav-brand">
-                <NavLink to="/" style={{ textDecoration: 'none', color: '#0066cc' }}>PrepPortal</NavLink>
+                <NavLink to="/home" style={{ textDecoration: 'none', color: 'inherit' }}>PrepPortal</NavLink>
             </div>
             <div className="nav-links">
-                {/* Always show these links, but protect them with onClick */}
-                <a href="#" onClick={(e) => handleProtectedClick(e, '/dashboard')} className="nav-link">
+                <NavLink to="/dashboard" onClick={(e) => handleProtectedClick(e, '/dashboard')} className="nav-link">
                     Dashboard
-                </a>
-                <a href="#" onClick={(e) => handleProtectedClick(e, '/questions')} className="nav-link">
+                </NavLink>
+                <NavLink to="/questions" onClick={(e) => handleProtectedClick(e, '/questions')} className="nav-link">
                     Questions
-                </a>
-                <a href="#" onClick={(e) => handleProtectedClick(e, '/tips')} className="nav-link">
+                </NavLink>
+                <NavLink to="/tips" onClick={(e) => handleProtectedClick(e, '/tips')} className="nav-link">
                     Tips
-                </a>
+                </NavLink>
 
                 {(user || isGuest) ? (
                     <>
-                        {user ? (
-                            <>
-                                <NavLink to="/profile" className="nav-link" style={{ fontWeight: '600', color: 'var(--primary-start)' }}>
-                                    {user.name}
-                                </NavLink>
-                                <button onClick={onLogout} className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '13px' }}>
-                                    Logout
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <NavLink to="/login" className="nav-link">
-                                    Login
-                                </NavLink>
-                                <NavLink to="/signup" className="btn btn-primary" style={{ padding: '6px 16px' }}>
-                                    Sign Up
-                                </NavLink>
-                            </>
-                        )}
+                        <NavLink to="/profile" className="nav-link" style={{ fontWeight: '600', color: 'var(--primary-start)' }}>
+                            <span className="nav-profile-chip">
+                                {user?.profilePic ? (
+                                    <img src={user.profilePic} alt="Profile" className="nav-profile-avatar" />
+                                ) : (
+                                    <span className="nav-profile-avatar nav-profile-initial">
+                                        {user ? user.name.charAt(0).toUpperCase() : 'G'}
+                                    </span>
+                                )}
+                                <span>{user ? user.name : 'Profile'}</span>
+                            </span>
+                        </NavLink>
+                        <button onClick={onLogout} className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '13px' }}>
+                            Logout
+                        </button>
                     </>
                 ) : (
                     <>
