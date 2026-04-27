@@ -1,9 +1,14 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 
-function Navbar({ user, isGuest, onLogout }) {
+function Navbar({ user, isGuest, onLogout, testActive }) {
     const navigate = useNavigate();
 
     const handleProtectedClick = (e, path) => {
+        if (testActive) {
+            e.preventDefault();
+            alert("⚠️ You have an active test in progress! Please submit or complete it before navigating away.");
+            return;
+        }
         if (!user && !isGuest) {
             e.preventDefault();
             alert("Please Login First to access this page!");
@@ -12,10 +17,26 @@ function Navbar({ user, isGuest, onLogout }) {
         }
     };
 
+    const handleBrandClick = (e) => {
+        if (testActive) {
+            e.preventDefault();
+            alert("⚠️ You have an active test in progress! Please submit or complete it before navigating away.");
+            return;
+        }
+    };
+
+    const handleLogoutClick = () => {
+        if (testActive) {
+            alert("⚠️ You have an active test in progress! Please submit or complete it before logging out.");
+            return;
+        }
+        onLogout();
+    };
+
     return (
         <div className="navbar">
             <div className="nav-brand">
-                <NavLink to="/home" style={{ textDecoration: 'none', color: 'inherit' }}>PrepPortal</NavLink>
+                <NavLink to="/home" onClick={handleBrandClick} style={{ textDecoration: 'none', color: 'inherit' }}>PrepPortal</NavLink>
             </div>
             <div className="nav-links">
                 <NavLink to="/dashboard" onClick={(e) => handleProtectedClick(e, '/dashboard')} className="nav-link">
@@ -30,7 +51,7 @@ function Navbar({ user, isGuest, onLogout }) {
 
                 {(user || isGuest) ? (
                     <>
-                        <NavLink to="/profile" className="nav-link" style={{ fontWeight: '600', color: 'var(--primary-start)' }}>
+                        <NavLink to="/profile" onClick={(e) => handleProtectedClick(e, '/profile')} className="nav-link" style={{ fontWeight: '600', color: 'var(--primary-start)' }}>
                             <span className="nav-profile-chip">
                                 {user?.profilePic ? (
                                     <img src={user.profilePic} alt="Profile" className="nav-profile-avatar" />
@@ -42,7 +63,7 @@ function Navbar({ user, isGuest, onLogout }) {
                                 <span>{user ? user.name : 'Profile'}</span>
                             </span>
                         </NavLink>
-                        <button onClick={onLogout} className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '13px' }}>
+                        <button onClick={handleLogoutClick} className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '13px' }}>
                             Logout
                         </button>
                     </>

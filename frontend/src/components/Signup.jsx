@@ -90,6 +90,11 @@ function Signup({ onSignupSuccess, onGuest }) {
                     <button type="submit" className="btn btn-primary" style={{ width: '100%', marginBottom: '15px' }} disabled={loading}>
                         {loading ? 'Signing Up...' : 'Sign Up'}
                     </button>
+
+                    <button type="button" onClick={() => { window.location.href = 'http://localhost:5000/api/auth/google'; }} className="btn" style={{ width: '100%', marginBottom: '15px', backgroundColor: '#fff', color: '#333', border: '1px solid #ccc', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style={{width: '18px', height: '18px'}} />
+                        Sign up with Google
+                    </button>
                 </form>
 
                 <div className="divider">

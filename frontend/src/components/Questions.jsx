@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { categories, testsData } from '../data/questionBank';
 
-function Questions() {
+function Questions({ onTestActiveChange }) {
     const [view, setView] = useState('categories'); // categories | testList | activeTest | result
     const [activeCategory, setActiveCategory] = useState(null);
     const [activeTest, setActiveTest] = useState(null);
@@ -24,6 +24,29 @@ function Questions() {
         }
         return () => clearInterval(timer);
     }, [view, timeLeft]);
+
+    // Notify parent when test is active + block browser close/refresh
+    useEffect(() => {
+        const isActive = view === 'activeTest';
+        if (onTestActiveChange) onTestActiveChange(isActive);
+
+        const handleBeforeUnload = (e) => {
+            if (isActive) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        };
+
+        if (isActive) {
+            window.addEventListener('beforeunload', handleBeforeUnload);
+        }
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+            // If component unmounts while test is active, reset
+            if (isActive && onTestActiveChange) onTestActiveChange(false);
+        };
+    }, [view]);
 
     const formatTime = (seconds) => {
         const m = Math.floor(seconds / 60);

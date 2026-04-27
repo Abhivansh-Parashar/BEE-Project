@@ -12,6 +12,7 @@ import Profile from './components/Profile';
 function App() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [testActive, setTestActive] = useState(false);
 
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem('user');
@@ -82,7 +83,7 @@ function App() {
 
   return (
     <div>
-      <Navbar user={user} isGuest={isGuest} onLogout={handleLogout} />
+      <Navbar user={user} isGuest={isGuest} onLogout={handleLogout} testActive={testActive} />
       <div className="container">
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
@@ -106,7 +107,7 @@ function App() {
           />
           <Route
             path="/questions"
-            element={hasAccess ? <Questions /> : <Navigate to="/login" />}
+            element={hasAccess ? <Questions onTestActiveChange={setTestActive} /> : <Navigate to="/login" />}
           />
           <Route
             path="/tips"
