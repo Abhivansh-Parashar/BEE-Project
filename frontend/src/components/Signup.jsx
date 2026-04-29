@@ -23,7 +23,6 @@ function Signup({ onSignupSuccess, onGuest }) {
             const data = await res.json();
 
             if (res.ok) {
-                // If the user signed up successfully, navigate to login
                 onSignupSuccess();
             } else {
                 setError(data.error || 'Failed to sign up');

@@ -2,17 +2,16 @@ import { useState, useEffect } from 'react';
 import { categories, testsData } from '../data/questionBank';
 
 function Questions({ onTestActiveChange }) {
-    const [view, setView] = useState('categories'); // categories | testList | activeTest | result
+    const [view, setView] = useState('categories');
     const [activeCategory, setActiveCategory] = useState(null);
     const [activeTest, setActiveTest] = useState(null);
     
-    // Test Taking State
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [answers, setAnswers] = useState({}); // { questionIndex: selectedOptionIndex }
+    const [answers, setAnswers] = useState({});
     const [timeLeft, setTimeLeft] = useState(0);
     const [result, setResult] = useState(null);
 
-    // Timer Effect
+
     useEffect(() => {
         let timer;
         if (view === 'activeTest' && timeLeft > 0) {
@@ -25,7 +24,7 @@ function Questions({ onTestActiveChange }) {
         return () => clearInterval(timer);
     }, [view, timeLeft]);
 
-    // Notify parent when test is active + block browser close/refresh
+
     useEffect(() => {
         const isActive = view === 'activeTest';
         if (onTestActiveChange) onTestActiveChange(isActive);
@@ -43,7 +42,6 @@ function Questions({ onTestActiveChange }) {
 
         return () => {
             window.removeEventListener('beforeunload', handleBeforeUnload);
-            // If component unmounts while test is active, reset
             if (isActive && onTestActiveChange) onTestActiveChange(false);
         };
     }, [view]);
@@ -73,7 +71,7 @@ function Questions({ onTestActiveChange }) {
     };
 
     const handleSubmitTest = async () => {
-        // Calculate Score & Weak Topics
+
         let score = 0;
         const weakTopics = new Set();
         const answerDetails = activeTest.questions.map((q, idx) => {
@@ -109,7 +107,7 @@ function Questions({ onTestActiveChange }) {
         setResult(testResult);
         setView('result');
 
-        // Optional: Save to backend
+
         try {
             const token = localStorage.getItem('token');
             if (token) {
@@ -127,7 +125,7 @@ function Questions({ onTestActiveChange }) {
         }
     };
 
-    // View: Categories
+
     if (view === 'categories') {
         return (
             <div className="fade-in">
@@ -153,7 +151,7 @@ function Questions({ onTestActiveChange }) {
         );
     }
 
-    // View: Test List
+
     if (view === 'testList') {
         const tests = testsData[activeCategory.id] || [];
         return (
@@ -189,7 +187,7 @@ function Questions({ onTestActiveChange }) {
         );
     }
 
-    // View: Active Test
+
     if (view === 'activeTest') {
         const question = activeTest.questions[currentQuestionIndex];
         const isLastQuestion = currentQuestionIndex === activeTest.questions.length - 1;
@@ -250,7 +248,7 @@ function Questions({ onTestActiveChange }) {
         );
     }
 
-    // View: Result
+
     if (view === 'result') {
         const isPassed = result.percentage >= 60;
         const correctAnswers = result.answers.filter((answer) => answer.isCorrect);
